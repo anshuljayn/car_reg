@@ -1,0 +1,37 @@
+apply plugin: 'java-library'
+
+configurations.all {
+    resolutionStrategy.cacheChangingModulesFor 0, 'seconds'
+}
+
+repositories {
+    mavenLocal()
+    mavenCentral()
+    jcenter()
+}
+
+dependencies {
+    compile group: 'com.accenture.atom', name: 'library-reporting-extent', version: '0.0.1', changing: true
+    compile group: 'com.accenture.atom', name: 'library-cucumber', version: '0.0.1', changing: true
+    compile group: 'com.accenture.atom', name: 'library-common', version: '0.0.1', changing: true
+}
+
+task cukes(type: Test) {
+    println 'in the test'
+    def suite = "$suiteDIR" + System.getProperty("cukes.testsuite") + '.xml'
+    systemProperty "cukes.env", System.getProperty("cukes.env")
+    systemProperty "cukes.techstack", System.getProperty("cukes.techstack")
+    systemProperty "cukes.webdrivermanager", System.getProperty("cukes.webdrivermanager")
+    systemProperty "cukes.tags", System.getProperty("cukes.tags")
+    systemProperty "chrome.options", System.getProperty("chrome.options")
+    println 'in the test suite: ' + suite
+    ignoreFailures = true
+
+    useTestNG() {
+        useDefaultListeners = true
+        suites suite
+    }
+
+    outputs.upToDateWhen { false }
+
+}
